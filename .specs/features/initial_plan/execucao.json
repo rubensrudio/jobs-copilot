@@ -1,0 +1,2661 @@
+{
+ "versao": 2,
+ "feature": "initial_plan",
+ "gerado_em": "2026-10-01T12:29:48",
+ "hashes": {
+  "plan": "2141c1de3c071b76",
+  "tasks": "9e937caec760e237"
+ },
+ "comandos": [
+  {
+   "alvo": "setup",
+   "dir": "backend",
+   "cmd": "uv sync",
+   "relatorio": null
+  },
+  {
+   "alvo": "setup",
+   "dir": "frontend",
+   "cmd": "npm ci",
+   "relatorio": null
+  },
+  {
+   "alvo": "lint",
+   "dir": "backend",
+   "cmd": "uv run ruff check . --output-format=concise",
+   "relatorio": null
+  },
+  {
+   "alvo": "lint",
+   "dir": "frontend",
+   "cmd": "npx ng lint",
+   "relatorio": null
+  },
+  {
+   "alvo": "typecheck",
+   "dir": "backend",
+   "cmd": "uv run mypy app lambdas",
+   "relatorio": null
+  },
+  {
+   "alvo": "typecheck",
+   "dir": "frontend",
+   "cmd": "npx tsc --noEmit -p tsconfig.app.json",
+   "relatorio": null
+  },
+  {
+   "alvo": "test",
+   "dir": "backend",
+   "cmd": "uv run pytest -q",
+   "relatorio": "reports/junit.xml"
+  },
+  {
+   "alvo": "test",
+   "dir": "frontend",
+   "cmd": "npx ng test --watch=false",
+   "relatorio": "reports/junit.xml"
+  },
+  {
+   "alvo": "test_related",
+   "dir": "backend",
+   "cmd": "uv run pytest -q {files}",
+   "relatorio": "reports/junit.xml"
+  },
+  {
+   "alvo": "test_related",
+   "dir": "frontend",
+   "cmd": "npx ng test --watch=false {include}",
+   "relatorio": "reports/junit.xml"
+  },
+  {
+   "alvo": "e2e",
+   "dir": "frontend",
+   "cmd": "npx playwright test {files}",
+   "relatorio": "reports/e2e-junit.xml"
+  },
+  {
+   "alvo": "e2e_arquivo",
+   "dir": ".",
+   "cmd": "frontend/e2e/regressao/{nome}.spec.ts",
+   "relatorio": null
+  },
+  {
+   "alvo": "build",
+   "dir": "backend",
+   "cmd": "uv build --wheel",
+   "relatorio": null
+  },
+  {
+   "alvo": "build",
+   "dir": "frontend",
+   "cmd": "npx ng build",
+   "relatorio": null
+  }
+ ],
+ "historias_p1": {
+  "P1: Analisar vaga a partir da URL": [
+   "JC-01",
+   "JC-02",
+   "JC-03",
+   "JC-04",
+   "JC-05",
+   "JC-06",
+   "JC-07",
+   "JC-08",
+   "JC-09",
+   "JC-16",
+   "JC-17",
+   "JC-18",
+   "JC-19"
+  ],
+  "P1: Gerar CV adaptado para a vaga": [
+   "JC-10",
+   "JC-11",
+   "JC-12",
+   "JC-13",
+   "JC-14",
+   "JC-15",
+   "JC-55",
+   "JC-56"
+  ],
+  "Casos de borda: exclusão de vaga (P1)": [
+   "JC-57"
+  ],
+  "Casos de borda: análise (P1)": [
+   "JC-58",
+   "JC-80",
+   "JC-81",
+   "JC-82",
+   "JC-84",
+   "JC-87",
+   "JC-88",
+   "JC-97"
+  ],
+  "Casos de borda: custo (P1)": [
+   "JC-59",
+   "JC-99"
+  ],
+  "P1: Criar conta e acessar o app": [
+   "JC-60",
+   "JC-61",
+   "JC-62",
+   "JC-63",
+   "JC-64",
+   "JC-65",
+   "JC-66",
+   "JC-67",
+   "JC-68",
+   "JC-69",
+   "JC-77"
+  ],
+  "P1: Montar o perfil a partir do CV em PDF": [
+   "JC-70",
+   "JC-71",
+   "JC-72",
+   "JC-73",
+   "JC-74",
+   "JC-75",
+   "JC-76",
+   "JC-78",
+   "JC-79"
+  ],
+  "Casos de borda: análise e perfil (P1)": [
+   "JC-83"
+  ],
+  "Casos de borda: perfil (P1)": [
+   "JC-85",
+   "JC-98"
+  ],
+  "Casos de borda: análise e coleta (P1)": [
+   "JC-91"
+  ],
+  "Casos de borda: acesso (P1)": [
+   "JC-96"
+  ]
+ },
+ "tasks": {
+  "TASK-001": {
+   "titulo": "Bootstrap repository with README and local infrastructure",
+   "tipo": "config",
+   "risco": "baixo",
+   "perfil": "infra",
+   "agente": "hm-engineer",
+   "testes": "none",
+   "depende_de": [],
+   "producao": [
+    "README.md",
+    "docker-compose.yml"
+   ],
+   "teste": [],
+   "wiring": [
+    "reports/",
+    "dist/",
+    ".venv/",
+    "node_modules/",
+    ".angular/",
+    "__pycache__/",
+    ".aws-sam/",
+    "mlflow-data/"
+   ],
+   "contratos": [],
+   "ancora": [],
+   "requisitos": [
+    "JC-96"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-002": {
+   "titulo": "Scaffold FastAPI backend with uv, ruff, mypy and pytest",
+   "tipo": "config",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-001"
+   ],
+   "producao": [
+    "backend/pyproject.toml",
+    "backend/app/main.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_health.py"
+   ],
+   "wiring": [
+    "backend/.python-version",
+    "backend/app/__init__.py",
+    "docker-compose.yml"
+   ],
+   "contratos": [],
+   "ancora": [],
+   "requisitos": [
+    "JC-96"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-003": {
+   "titulo": "Add typed settings and the error envelope",
+   "tipo": "config",
+   "risco": "crítico",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-002"
+   ],
+   "producao": [
+    "backend/app/config.py",
+    "backend/app/errors.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_config.py",
+    "backend/tests/unit/test_errors.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-1",
+    "CT-2"
+   ],
+   "ancora": [
+    "AS-7"
+   ],
+   "requisitos": [
+    "JC-99",
+    "JC-46",
+    "JC-62"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-004": {
+   "titulo": "Connect MongoDB, declare collections and create indexes",
+   "tipo": "infra",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-003"
+   ],
+   "producao": [
+    "backend/app/db.py"
+   ],
+   "teste": [
+    "backend/tests/conftest.py",
+    "backend/tests/integration/test_db.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-2",
+    "CT-3"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-17",
+    "JC-91",
+    "JC-62"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-005": {
+   "titulo": "Implement opaque sessions and current-user dependencies",
+   "tipo": "lógica-negócio",
+   "risco": "crítico",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-004"
+   ],
+   "producao": [
+    "backend/app/auth/sessions.py",
+    "backend/app/deps.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_sessions.py",
+    "backend/tests/integration/test_deps.py",
+    "backend/tests/conftest.py"
+   ],
+   "wiring": [
+    "backend/app/auth/__init__.py"
+   ],
+   "contratos": [
+    "CT-1",
+    "CT-3",
+    "CT-4",
+    "CT-5"
+   ],
+   "ancora": [
+    "AS-1",
+    "AS-7"
+   ],
+   "requisitos": [
+    "JC-61",
+    "JC-62",
+    "JC-63",
+    "JC-67",
+    "JC-96"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-006": {
+   "titulo": "Implement invitation check, signup attempts and terms acceptance",
+   "tipo": "lógica-negócio",
+   "risco": "crítico",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-004"
+   ],
+   "producao": [
+    "backend/app/auth/signup.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_signup.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-2",
+    "CT-3",
+    "CT-6"
+   ],
+   "ancora": [
+    "AS-5",
+    "AS-1"
+   ],
+   "requisitos": [
+    "JC-60",
+    "JC-69"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-007": {
+   "titulo": "Add Google and GitHub OAuth login, signup and logout routes",
+   "tipo": "integração-externa",
+   "risco": "crítico",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-006"
+   ],
+   "producao": [
+    "backend/app/auth/oauth.py",
+    "backend/app/auth/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_auth_routes.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-4",
+    "CT-40",
+    "CT-5",
+    "CT-6"
+   ],
+   "ancora": [
+    "AS-1",
+    "AS-6",
+    "AS-8"
+   ],
+   "requisitos": [
+    "JC-60",
+    "JC-61",
+    "JC-63",
+    "JC-69"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-008": {
+   "titulo": "Implement atomic monthly cost guard and pricing",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-004"
+   ],
+   "producao": [
+    "backend/app/costs/guard.py",
+    "backend/app/llm/pricing.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_pricing.py",
+    "backend/tests/integration/test_cost_guard.py"
+   ],
+   "wiring": [
+    "backend/app/costs/__init__.py",
+    "backend/app/llm/__init__.py"
+   ],
+   "contratos": [
+    "CT-3",
+    "CT-7"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-19",
+    "JC-59",
+    "JC-99"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-009": {
+   "titulo": "Expose current user profile and settings endpoints",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-008"
+   ],
+   "producao": [
+    "backend/app/users/service.py",
+    "backend/app/users/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_me_routes.py"
+   ],
+   "wiring": [
+    "backend/app/users/__init__.py",
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-4",
+    "CT-7",
+    "CT-8"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-19",
+    "JC-46",
+    "JC-53",
+    "JC-54"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-010": {
+   "titulo": "Build admin service and routes for invitations, accounts and global cap",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-006",
+    "TASK-008"
+   ],
+   "producao": [
+    "backend/app/admin/service.py",
+    "backend/app/admin/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_admin_routes.py"
+   ],
+   "wiring": [
+    "backend/app/admin/__init__.py",
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-39",
+    "CT-4",
+    "CT-5",
+    "CT-6",
+    "CT-7"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-66",
+    "JC-67",
+    "JC-68",
+    "JC-99"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-011": {
+   "titulo": "Scaffold Angular app with Vitest JUnit, lint, proxy and Playwright",
+   "tipo": "config",
+   "risco": "baixo",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-001"
+   ],
+   "producao": [
+    "frontend/angular.json",
+    "frontend/playwright.config.ts"
+   ],
+   "teste": [
+    "frontend/src/app/app.spec.ts"
+   ],
+   "wiring": [
+    "frontend/package.json",
+    "frontend/proxy.conf.json",
+    "http://localhost:8000",
+    "frontend/src/app/app.config.ts",
+    "frontend/src/app/app.routes.ts",
+    "frontend/src/app/app.ts"
+   ],
+   "contratos": [],
+   "ancora": [],
+   "requisitos": [
+    "JC-96"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-012": {
+   "titulo": "Add HTTP interceptor, auth service and route guards",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-007",
+    "TASK-009",
+    "TASK-011"
+   ],
+   "producao": [
+    "frontend/src/app/core/api.interceptor.ts",
+    "frontend/src/app/core/auth.service.ts"
+   ],
+   "teste": [
+    "frontend/src/app/core/api.interceptor.spec.ts",
+    "frontend/src/app/core/auth.service.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.config.ts"
+   ],
+   "contratos": [
+    "CT-40",
+    "CT-8",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-96",
+    "JC-61",
+    "JC-63"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-013": {
+   "titulo": "Build login and terms acceptance pages",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-012"
+   ],
+   "producao": [
+    "frontend/src/app/features/auth/login.page.ts",
+    "frontend/src/app/features/auth/terms.page.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/auth/login.page.spec.ts",
+    "frontend/src/app/features/auth/terms.page.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts",
+    "/signup/terms"
+   ],
+   "contratos": [
+    "CT-40",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-60",
+    "JC-61",
+    "JC-69"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-014": {
+   "titulo": "Build application shell with cost and highlight indicators",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-012"
+   ],
+   "producao": [
+    "frontend/src/app/core/shell.component.ts"
+   ],
+   "teste": [
+    "frontend/src/app/core/shell.component.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts"
+   ],
+   "contratos": [
+    "CT-8",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-19",
+    "JC-54",
+    "JC-63",
+    "JC-99"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-015": {
+   "titulo": "Build admin page for invitations, accounts and global cap",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-010",
+    "TASK-012"
+   ],
+   "producao": [
+    "frontend/src/app/features/admin/admin.service.ts",
+    "frontend/src/app/features/admin/admin.page.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/admin/admin.service.spec.ts",
+    "frontend/src/app/features/admin/admin.page.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts"
+   ],
+   "contratos": [
+    "CT-39",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-66",
+    "JC-67",
+    "JC-68"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-016": {
+   "titulo": "Define profile models and safe PDF text extraction",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-003"
+   ],
+   "producao": [
+    "backend/app/profile/models.py",
+    "backend/app/profile/pdf_text.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_profile_models.py",
+    "backend/tests/unit/test_pdf_text.py",
+    "backend/tests/fixtures/make_pdfs.py"
+   ],
+   "wiring": [
+    "backend/app/profile/__init__.py"
+   ],
+   "contratos": [
+    "CT-1",
+    "CT-13"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-70",
+    "JC-71",
+    "JC-78",
+    "JC-79",
+    "JC-98"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-017": {
+   "titulo": "Wrap GridFS file storage scoped by user",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-004"
+   ],
+   "producao": [
+    "backend/app/files/storage.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_file_storage.py"
+   ],
+   "wiring": [
+    "backend/app/files/__init__.py"
+   ],
+   "contratos": [
+    "CT-10",
+    "CT-3"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-14",
+    "JC-57",
+    "JC-62",
+    "JC-70"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-018": {
+   "titulo": "Implement the LangChain LLM gateway with structured outputs",
+   "tipo": "integração-externa",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-008",
+    "TASK-016"
+   ],
+   "producao": [
+    "backend/app/llm/gateway.py",
+    "backend/app/llm/prompts.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_llm_gateway.py",
+    "backend/tests/unit/test_prompts.py",
+    "backend/tests/fakes.py",
+    "backend/tests/external/test_llm_external.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-11",
+    "CT-13",
+    "CT-2"
+   ],
+   "ancora": [
+    "AS-8",
+    "AS-3"
+   ],
+   "requisitos": [
+    "JC-02",
+    "JC-03",
+    "JC-71",
+    "JC-83",
+    "JC-97"
+   ],
+   "gate": null,
+   "paralelo_seguro": false
+  },
+  "TASK-019": {
+   "titulo": "Implement Pinecone vector store and OpenAI embedder",
+   "tipo": "integração-externa",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-003",
+    "TASK-008"
+   ],
+   "producao": [
+    "backend/app/vectors/store.py",
+    "backend/app/vectors/embeddings.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_vector_store.py",
+    "backend/tests/fakes.py",
+    "backend/tests/external/test_pinecone_external.py"
+   ],
+   "wiring": [
+    "backend/app/vectors/__init__.py",
+    "README.md"
+   ],
+   "contratos": [
+    "CT-12",
+    "CT-2"
+   ],
+   "ancora": [
+    "AS-8"
+   ],
+   "requisitos": [
+    "JC-04",
+    "JC-57",
+    "JC-65"
+   ],
+   "gate": null,
+   "paralelo_seguro": false
+  },
+  "TASK-020": {
+   "titulo": "Extract profile from CV text and chunk it without contact data",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-016",
+    "TASK-018"
+   ],
+   "producao": [
+    "backend/app/profile/extraction.py",
+    "backend/app/profile/chunks.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_profile_extraction.py",
+    "backend/tests/unit/test_profile_chunks.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-11",
+    "CT-13",
+    "CT-14"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-70",
+    "JC-71",
+    "JC-72",
+    "JC-83"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-021": {
+   "titulo": "Implement profile service with drafts, replacement and reindexing",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-008",
+    "TASK-017",
+    "TASK-019",
+    "TASK-020"
+   ],
+   "producao": [
+    "backend/app/profile/service.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_profile_service.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-10",
+    "CT-12",
+    "CT-13",
+    "CT-14",
+    "CT-15",
+    "CT-7"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-70",
+    "JC-73",
+    "JC-74",
+    "JC-75",
+    "JC-76",
+    "JC-85"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-022": {
+   "titulo": "Expose profile REST routes with multipart upload",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-021"
+   ],
+   "producao": [
+    "backend/app/profile/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_profile_routes.py",
+    "backend/tests/conftest.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-15",
+    "CT-16",
+    "CT-4"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-70",
+    "JC-76",
+    "JC-78",
+    "JC-79",
+    "JC-98"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-023": {
+   "titulo": "Build profile HTTP service and editable profile form",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-012",
+    "TASK-022"
+   ],
+   "producao": [
+    "frontend/src/app/features/profile/profile.service.ts",
+    "frontend/src/app/features/profile/profile-form.component.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/profile/profile.service.spec.ts",
+    "frontend/src/app/features/profile/profile-form.component.spec.ts"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-16",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-73",
+    "JC-74"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-024": {
+   "titulo": "Build profile page with upload, replacement dialog and draft review",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-023"
+   ],
+   "producao": [
+    "frontend/src/app/features/profile/profile.page.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/profile/profile.page.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts"
+   ],
+   "contratos": [
+    "CT-16"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-70",
+    "JC-73",
+    "JC-76",
+    "JC-78",
+    "JC-79",
+    "JC-98"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-025": {
+   "titulo": "Validate public URLs and fetch job posting pages safely",
+   "tipo": "integração-externa",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-003"
+   ],
+   "producao": [
+    "backend/app/jobs/url.py",
+    "backend/app/jobs/fetcher.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_url.py",
+    "backend/tests/unit/test_fetcher.py",
+    "backend/tests/fixtures/job_posting.html"
+   ],
+   "wiring": [
+    "backend/app/jobs/__init__.py"
+   ],
+   "contratos": [
+    "CT-1",
+    "CT-17"
+   ],
+   "ancora": [
+    "AS-8"
+   ],
+   "requisitos": [
+    "JC-01",
+    "JC-17",
+    "JC-80",
+    "JC-88"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-026": {
+   "titulo": "Compute weighted fit score, gaps and evidence validation",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-002"
+   ],
+   "producao": [
+    "backend/app/analysis/scoring.py",
+    "backend/app/analysis/evidence.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_scoring.py",
+    "backend/tests/unit/test_evidence.py"
+   ],
+   "wiring": [
+    "backend/app/analysis/__init__.py"
+   ],
+   "contratos": [
+    "CT-18"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-05",
+    "JC-06",
+    "JC-07",
+    "JC-83"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-027": {
+   "titulo": "Model job postings and implement the scoped repository",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-004"
+   ],
+   "producao": [
+    "backend/app/jobs/models.py",
+    "backend/app/jobs/repository.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_job_repository.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-19",
+    "CT-3"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-01",
+    "JC-03",
+    "JC-08",
+    "JC-31",
+    "JC-91"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-028": {
+   "titulo": "Build the LangGraph analysis pipeline and runner",
+   "tipo": "lógica-negócio",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-008",
+    "TASK-018",
+    "TASK-019",
+    "TASK-020",
+    "TASK-021",
+    "TASK-025",
+    "TASK-026",
+    "TASK-027"
+   ],
+   "producao": [
+    "backend/app/analysis/graph.py",
+    "backend/app/analysis/runner.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_analysis_runner.py",
+    "backend/tests/unit/test_analysis_graph.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-11",
+    "CT-12",
+    "CT-14",
+    "CT-15",
+    "CT-17",
+    "CT-18",
+    "CT-19",
+    "CT-20",
+    "CT-7"
+   ],
+   "ancora": [
+    "AS-3"
+   ],
+   "requisitos": [
+    "JC-02",
+    "JC-03",
+    "JC-04",
+    "JC-05",
+    "JC-08",
+    "JC-18",
+    "JC-19",
+    "JC-58",
+    "JC-71",
+    "JC-82",
+    "JC-83",
+    "JC-84",
+    "JC-87",
+    "JC-88",
+    "JC-97",
+    "JC-99"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-029": {
+   "titulo": "Implement job service: submit, paste, reanalyze, list, seen and delete",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-017",
+    "TASK-019",
+    "TASK-025",
+    "TASK-027",
+    "TASK-028"
+   ],
+   "producao": [
+    "backend/app/jobs/service.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_job_service.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-10",
+    "CT-12",
+    "CT-17",
+    "CT-19",
+    "CT-20",
+    "CT-21"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-09",
+    "JC-16",
+    "JC-17",
+    "JC-23",
+    "JC-43",
+    "JC-52",
+    "JC-57",
+    "JC-84",
+    "JC-85",
+    "JC-87",
+    "JC-91"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-030": {
+   "titulo": "Expose job REST routes with background analysis",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-029"
+   ],
+   "producao": [
+    "backend/app/jobs/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_jobs_api.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-20",
+    "CT-21",
+    "CT-22",
+    "CT-4"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-01",
+    "JC-09",
+    "JC-16",
+    "JC-17",
+    "JC-52",
+    "JC-57",
+    "JC-62",
+    "JC-80",
+    "JC-96"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-031": {
+   "titulo": "Build jobs HTTP service and jobs list page",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-012",
+    "TASK-030"
+   ],
+   "producao": [
+    "frontend/src/app/features/jobs/jobs.service.ts",
+    "frontend/src/app/features/jobs/jobs-list.page.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/jobs/jobs.service.spec.ts",
+    "frontend/src/app/features/jobs/jobs-list.page.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts"
+   ],
+   "contratos": [
+    "CT-22",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-09",
+    "JC-17",
+    "JC-23",
+    "JC-43",
+    "JC-50",
+    "JC-80",
+    "JC-81",
+    "JC-85"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-032": {
+   "titulo": "Build job detail page with progress, analysis view and paste fallback",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-031"
+   ],
+   "producao": [
+    "frontend/src/app/features/jobs/job-detail.page.ts",
+    "frontend/src/app/features/jobs/analysis-view.component.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/jobs/job-detail.page.spec.ts",
+    "frontend/src/app/features/jobs/analysis-view.component.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts"
+   ],
+   "contratos": [
+    "CT-22"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-04",
+    "JC-06",
+    "JC-07",
+    "JC-08",
+    "JC-16",
+    "JC-18",
+    "JC-52",
+    "JC-87",
+    "JC-88"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-033": {
+   "titulo": "Implement deterministic validators for the tailored CV",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-016",
+    "TASK-018",
+    "TASK-026"
+   ],
+   "producao": [
+    "backend/app/tailored_cv/validators.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_cv_validators.py"
+   ],
+   "wiring": [
+    "backend/app/tailored_cv/__init__.py"
+   ],
+   "contratos": [
+    "CT-11",
+    "CT-13",
+    "CT-18",
+    "CT-23"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-11",
+    "JC-12",
+    "JC-13"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-034": {
+   "titulo": "Render the tailored CV PDF with ReportLab",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-016",
+    "TASK-018"
+   ],
+   "producao": [
+    "backend/app/tailored_cv/pdf.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_cv_pdf.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-11",
+    "CT-13",
+    "CT-24"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-10",
+    "JC-56"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-035": {
+   "titulo": "Generate versioned tailored CVs with validation and page limit",
+   "tipo": "lógica-negócio",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-008",
+    "TASK-017",
+    "TASK-018",
+    "TASK-021",
+    "TASK-027",
+    "TASK-033",
+    "TASK-034"
+   ],
+   "producao": [
+    "backend/app/tailored_cv/service.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_tailored_cv_service.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-10",
+    "CT-11",
+    "CT-15",
+    "CT-19",
+    "CT-23",
+    "CT-24",
+    "CT-25",
+    "CT-7"
+   ],
+   "ancora": [
+    "AS-3"
+   ],
+   "requisitos": [
+    "JC-10",
+    "JC-11",
+    "JC-12",
+    "JC-13",
+    "JC-14",
+    "JC-15",
+    "JC-19",
+    "JC-55",
+    "JC-56",
+    "JC-71",
+    "JC-85",
+    "JC-99"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-036": {
+   "titulo": "Expose tailored CV REST routes and PDF download",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-035"
+   ],
+   "producao": [
+    "backend/app/tailored_cv/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_tailored_cv_api.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-25",
+    "CT-26",
+    "CT-4"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-14",
+    "JC-55"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-037": {
+   "titulo": "Build tailored CV panel with language choice and download",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-032",
+    "TASK-036"
+   ],
+   "producao": [
+    "frontend/src/app/features/jobs/tailored-cv.service.ts",
+    "frontend/src/app/features/jobs/tailored-cv-panel.component.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/jobs/tailored-cv.service.spec.ts",
+    "frontend/src/app/features/jobs/tailored-cv-panel.component.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/features/jobs/job-detail.page.ts"
+   ],
+   "contratos": [
+    "CT-26",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-13",
+    "JC-14",
+    "JC-55"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-038": {
+   "titulo": "Delete account data in cascade across all stores",
+   "tipo": "lógica-negócio",
+   "risco": "crítico",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-009",
+    "TASK-017",
+    "TASK-019"
+   ],
+   "producao": [
+    "backend/app/users/deletion.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_account_deletion.py"
+   ],
+   "wiring": [
+    "backend/app/users/router.py"
+   ],
+   "contratos": [
+    "CT-10",
+    "CT-12",
+    "CT-27",
+    "CT-3",
+    "CT-5"
+   ],
+   "ancora": [
+    "AS-5",
+    "AS-3"
+   ],
+   "requisitos": [
+    "JC-64"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-039": {
+   "titulo": "Export all user data as a ZIP archive",
+   "tipo": "lógica-negócio",
+   "risco": "crítico",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-009",
+    "TASK-017"
+   ],
+   "producao": [
+    "backend/app/users/export.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_data_export.py"
+   ],
+   "wiring": [
+    "backend/app/users/router.py"
+   ],
+   "contratos": [
+    "CT-10",
+    "CT-28",
+    "CT-3"
+   ],
+   "ancora": [
+    "AS-5",
+    "AS-3"
+   ],
+   "requisitos": [
+    "JC-77"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-040": {
+   "titulo": "Build account page with settings, export and account deletion",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-009",
+    "TASK-012",
+    "TASK-038",
+    "TASK-039"
+   ],
+   "producao": [
+    "frontend/src/app/features/account/account.service.ts",
+    "frontend/src/app/features/account/account.page.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/account/account.service.spec.ts",
+    "frontend/src/app/features/account/account.page.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts"
+   ],
+   "contratos": [
+    "CT-8",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-46",
+    "JC-53",
+    "JC-64",
+    "JC-77"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-041": {
+   "titulo": "Implement decisions and the application stage machine",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-027"
+   ],
+   "producao": [
+    "backend/app/decisions/pipeline.py",
+    "backend/app/decisions/service.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_pipeline.py",
+    "backend/tests/integration/test_decisions_service.py"
+   ],
+   "wiring": [
+    "backend/app/decisions/__init__.py"
+   ],
+   "contratos": [
+    "CT-19",
+    "CT-29"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-20",
+    "JC-21",
+    "JC-22",
+    "JC-23",
+    "JC-24",
+    "JC-25"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-042": {
+   "titulo": "Expose decision and application pipeline routes",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-041"
+   ],
+   "producao": [
+    "backend/app/decisions/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_decisions_api.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-29",
+    "CT-30",
+    "CT-4"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-20",
+    "JC-24",
+    "JC-25"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-043": {
+   "titulo": "Build applications HTTP service and pipeline page",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-012",
+    "TASK-042"
+   ],
+   "producao": [
+    "frontend/src/app/features/applications/applications.service.ts",
+    "frontend/src/app/features/applications/pipeline.page.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/applications/applications.service.spec.ts",
+    "frontend/src/app/features/applications/pipeline.page.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/app.routes.ts"
+   ],
+   "contratos": [
+    "CT-30",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-24",
+    "JC-25"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-044": {
+   "titulo": "Add apply and skip decision bar to job detail",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-032",
+    "TASK-043"
+   ],
+   "producao": [
+    "frontend/src/app/features/jobs/decision-bar.component.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/jobs/decision-bar.component.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/features/jobs/job-detail.page.ts"
+   ],
+   "contratos": [
+    "CT-30"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-20",
+    "JC-23"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-045": {
+   "titulo": "Define job source protocol and implement the Remotive source",
+   "tipo": "integração-externa",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-025"
+   ],
+   "producao": [
+    "backend/app/collection/sources/base.py",
+    "backend/app/collection/sources/remotive.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_sources_base.py",
+    "backend/tests/unit/test_remotive_source.py",
+    "backend/tests/fixtures/remotive.json"
+   ],
+   "wiring": [
+    "backend/app/collection/__init__.py",
+    "backend/app/collection/sources/__init__.py"
+   ],
+   "contratos": [
+    "CT-17",
+    "CT-31"
+   ],
+   "ancora": [
+    "AS-8"
+   ],
+   "requisitos": [
+    "JC-30"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-046": {
+   "titulo": "Implement the Greenhouse job board source",
+   "tipo": "integração-externa",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-045"
+   ],
+   "producao": [
+    "backend/app/collection/sources/greenhouse.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_greenhouse_source.py",
+    "backend/tests/fixtures/greenhouse.json"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-31"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-30"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-047": {
+   "titulo": "Run daily collection per user with dedupe, analysis and highlights",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-008",
+    "TASK-027",
+    "TASK-028",
+    "TASK-046"
+   ],
+   "producao": [
+    "backend/app/collection/service.py",
+    "backend/app/collection/lock.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_collection_service.py"
+   ],
+   "wiring": [],
+   "contratos": [
+    "CT-19",
+    "CT-20",
+    "CT-31",
+    "CT-32",
+    "CT-7"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-30",
+    "JC-31",
+    "JC-32",
+    "JC-33",
+    "JC-35",
+    "JC-50",
+    "JC-53",
+    "JC-65",
+    "JC-67",
+    "JC-89",
+    "JC-92",
+    "JC-95"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-048": {
+   "titulo": "Expose internal collection trigger and search criteria routes",
+   "tipo": "crud-padrão",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-047"
+   ],
+   "producao": [
+    "backend/app/collection/router.py",
+    "backend/app/collection/criteria.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_collection_api.py"
+   ],
+   "wiring": [
+    "backend/app/main.py"
+   ],
+   "contratos": [
+    "CT-31",
+    "CT-32",
+    "CT-33",
+    "CT-34",
+    "CT-4"
+   ],
+   "ancora": [
+    "AS-6"
+   ],
+   "requisitos": [
+    "JC-30",
+    "JC-34",
+    "JC-92"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-049": {
+   "titulo": "Schedule collection with AWS Lambda and EventBridge via SAM",
+   "tipo": "infra",
+   "risco": "crítico",
+   "perfil": "infra",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-048"
+   ],
+   "producao": [
+    "backend/lambdas/collector_trigger/handler.py",
+    "infra/template.yaml"
+   ],
+   "teste": [
+    "backend/tests/unit/test_collector_trigger.py"
+   ],
+   "wiring": [
+    "backend/lambdas/__init__.py",
+    "backend/lambdas/collector_trigger/__init__.py",
+    "README.md"
+   ],
+   "contratos": [
+    "CT-33"
+   ],
+   "ancora": [
+    "AS-7",
+    "AS-8"
+   ],
+   "requisitos": [
+    "JC-30"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-050": {
+   "titulo": "Build search criteria settings component",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-012",
+    "TASK-040",
+    "TASK-048"
+   ],
+   "producao": [
+    "frontend/src/app/features/account/criteria.service.ts",
+    "frontend/src/app/features/account/search-criteria.component.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/account/criteria.service.spec.ts",
+    "frontend/src/app/features/account/search-criteria.component.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/features/account/account.page.ts"
+   ],
+   "contratos": [
+    "CT-34",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-34"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-051": {
+   "titulo": "Build ranking feature rows from job and analysis",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-027",
+    "TASK-028"
+   ],
+   "producao": [
+    "backend/app/ranking/features.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_ranking_features.py"
+   ],
+   "wiring": [
+    "backend/app/ranking/__init__.py"
+   ],
+   "contratos": [
+    "CT-19",
+    "CT-20",
+    "CT-35"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-40"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-052": {
+   "titulo": "Train per-user XGBoost ranker, compare to baseline and register in MLflow",
+   "tipo": "integração-externa",
+   "risco": "alto",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-038",
+    "TASK-041",
+    "TASK-051"
+   ],
+   "producao": [
+    "backend/app/ranking/trainer.py",
+    "backend/app/ranking/registry.py"
+   ],
+   "teste": [
+    "backend/tests/unit/test_trainer.py",
+    "backend/tests/integration/test_mlflow_registry.py",
+    "backend/tests/fakes.py"
+   ],
+   "wiring": [
+    "backend/app/users/deletion.py",
+    "README.md"
+   ],
+   "contratos": [
+    "CT-27",
+    "CT-29",
+    "CT-35",
+    "CT-36"
+   ],
+   "ancora": [
+    "AS-8"
+   ],
+   "requisitos": [
+    "JC-40",
+    "JC-41",
+    "JC-42",
+    "JC-44",
+    "JC-45",
+    "JC-64",
+    "JC-65",
+    "JC-93",
+    "JC-94"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-053": {
+   "titulo": "Score jobs with the promoted model",
+   "tipo": "lógica-negócio",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-027",
+    "TASK-052"
+   ],
+   "producao": [
+    "backend/app/ranking/scorer.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_ranking_scorer.py"
+   ],
+   "wiring": [
+    "backend/app/analysis/runner.py",
+    "backend/app/analysis/runner.py"
+   ],
+   "contratos": [
+    "CT-19",
+    "CT-35",
+    "CT-36",
+    "CT-37"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-42",
+    "JC-45",
+    "JC-65"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-054": {
+   "titulo": "Expose ranking training and status routes",
+   "tipo": "crud-padrão",
+   "risco": "médio",
+   "perfil": "backend",
+   "agente": "hm-engineer",
+   "testes": "integration",
+   "depende_de": [
+    "TASK-005",
+    "TASK-052",
+    "TASK-053"
+   ],
+   "producao": [
+    "backend/app/ranking/router.py"
+   ],
+   "teste": [
+    "backend/tests/integration/test_ranking_api.py"
+   ],
+   "wiring": [
+    "backend/app/main.py",
+    "backend/tests/conftest.py"
+   ],
+   "contratos": [
+    "CT-36",
+    "CT-37",
+    "CT-38",
+    "CT-4"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-40",
+    "JC-93"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  },
+  "TASK-055": {
+   "titulo": "Build ranking panel with training action and ordering label",
+   "tipo": "ui-puro",
+   "risco": "médio",
+   "perfil": "frontend",
+   "agente": "hm-designer",
+   "testes": "unit",
+   "depende_de": [
+    "TASK-031",
+    "TASK-054"
+   ],
+   "producao": [
+    "frontend/src/app/features/jobs/ranking.service.ts",
+    "frontend/src/app/features/jobs/ranking-panel.component.ts"
+   ],
+   "teste": [
+    "frontend/src/app/features/jobs/ranking.service.spec.ts",
+    "frontend/src/app/features/jobs/ranking-panel.component.spec.ts"
+   ],
+   "wiring": [
+    "frontend/src/app/features/jobs/jobs-list.page.ts"
+   ],
+   "contratos": [
+    "CT-38",
+    "CT-9"
+   ],
+   "ancora": [],
+   "requisitos": [
+    "JC-42",
+    "JC-43",
+    "JC-93"
+   ],
+   "gate": null,
+   "paralelo_seguro": true
+  }
+ },
+ "ondas": [
+  {
+   "n": 1,
+   "tasks": [
+    "TASK-001"
+   ],
+   "risco_max": "baixo",
+   "gatilhos_previstos": {},
+   "perfil_qa_previsto": null
+  },
+  {
+   "n": 2,
+   "tasks": [
+    "TASK-002",
+    "TASK-011"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {},
+   "perfil_qa_previsto": null
+  },
+  {
+   "n": 3,
+   "tasks": [
+    "TASK-003"
+   ],
+   "risco_max": "crítico",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-003"
+    ]
+   },
+   "perfil_qa_previsto": "EXAUSTIVO"
+  },
+  {
+   "n": 4,
+   "tasks": [
+    "TASK-025"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-025"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 5,
+   "tasks": [
+    "TASK-045"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-045"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 6,
+   "tasks": [
+    "TASK-004",
+    "TASK-016",
+    "TASK-026",
+    "TASK-046"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {},
+   "perfil_qa_previsto": null
+  },
+  {
+   "n": 7,
+   "tasks": [
+    "TASK-005"
+   ],
+   "risco_max": "crítico",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-005"
+    ]
+   },
+   "perfil_qa_previsto": "EXAUSTIVO"
+  },
+  {
+   "n": 8,
+   "tasks": [
+    "TASK-006"
+   ],
+   "risco_max": "crítico",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-006"
+    ]
+   },
+   "perfil_qa_previsto": "EXAUSTIVO"
+  },
+  {
+   "n": 9,
+   "tasks": [
+    "TASK-007"
+   ],
+   "risco_max": "crítico",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-007"
+    ]
+   },
+   "perfil_qa_previsto": "EXAUSTIVO"
+  },
+  {
+   "n": 10,
+   "tasks": [
+    "TASK-008",
+    "TASK-017",
+    "TASK-027"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G2": {
+     "CT-3": [
+      "TASK-008",
+      "TASK-017",
+      "TASK-027"
+     ]
+    }
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 11,
+   "tasks": [
+    "TASK-018"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-018"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 12,
+   "tasks": [
+    "TASK-019"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-019"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 13,
+   "tasks": [
+    "TASK-009",
+    "TASK-020",
+    "TASK-033",
+    "TASK-034"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G2": {
+     "CT-11": [
+      "TASK-020",
+      "TASK-033",
+      "TASK-034"
+     ],
+     "CT-13": [
+      "TASK-020",
+      "TASK-033",
+      "TASK-034"
+     ]
+    }
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 14,
+   "tasks": [
+    "TASK-038"
+   ],
+   "risco_max": "crítico",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-038"
+    ]
+   },
+   "perfil_qa_previsto": "EXAUSTIVO"
+  },
+  {
+   "n": 15,
+   "tasks": [
+    "TASK-039"
+   ],
+   "risco_max": "crítico",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-039"
+    ]
+   },
+   "perfil_qa_previsto": "EXAUSTIVO"
+  },
+  {
+   "n": 16,
+   "tasks": [
+    "TASK-010",
+    "TASK-012",
+    "TASK-021",
+    "TASK-041"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G2": {
+     "CT-7": [
+      "TASK-010",
+      "TASK-021"
+     ]
+    }
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 17,
+   "tasks": [
+    "TASK-028"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-028"
+    ],
+    "G3": [
+     "Casos de borda: análise e perfil (P1)"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 18,
+   "tasks": [
+    "TASK-035"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-035"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 19,
+   "tasks": [
+    "TASK-013",
+    "TASK-022",
+    "TASK-029",
+    "TASK-047"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G2": {
+     "CT-19": [
+      "TASK-029",
+      "TASK-047"
+     ],
+     "CT-20": [
+      "TASK-029",
+      "TASK-047"
+     ]
+    },
+    "G3": [
+     "Casos de borda: análise e coleta (P1)"
+    ]
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 20,
+   "tasks": [
+    "TASK-048"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-048"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 21,
+   "tasks": [
+    "TASK-049"
+   ],
+   "risco_max": "crítico",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-049"
+    ]
+   },
+   "perfil_qa_previsto": "EXAUSTIVO"
+  },
+  {
+   "n": 22,
+   "tasks": [
+    "TASK-014",
+    "TASK-023",
+    "TASK-030",
+    "TASK-051"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G2": {
+     "CT-9": [
+      "TASK-014",
+      "TASK-023"
+     ],
+     "CT-20": [
+      "TASK-030",
+      "TASK-051"
+     ]
+    },
+    "G3": [
+     "Casos de borda: exclusão de vaga (P1)",
+     "Casos de borda: custo (P1)",
+     "Casos de borda: acesso (P1)"
+    ]
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 23,
+   "tasks": [
+    "TASK-052"
+   ],
+   "risco_max": "alto",
+   "gatilhos_previstos": {
+    "G1": [
+     "TASK-052"
+    ]
+   },
+   "perfil_qa_previsto": "RIGOROSO"
+  },
+  {
+   "n": 24,
+   "tasks": [
+    "TASK-015",
+    "TASK-036",
+    "TASK-053"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {},
+   "perfil_qa_previsto": null
+  },
+  {
+   "n": 25,
+   "tasks": [
+    "TASK-024",
+    "TASK-042"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G3": [
+     "P1: Montar o perfil a partir do CV em PDF"
+    ]
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 26,
+   "tasks": [
+    "TASK-031",
+    "TASK-054"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G3": [
+     "Casos de borda: perfil (P1)"
+    ]
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 27,
+   "tasks": [
+    "TASK-032",
+    "TASK-055"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G3": [
+     "P1: Analisar vaga a partir da URL",
+     "Casos de borda: análise (P1)"
+    ]
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 28,
+   "tasks": [
+    "TASK-037",
+    "TASK-040"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G2": {
+     "CT-9": [
+      "TASK-037",
+      "TASK-040"
+     ]
+    },
+    "G3": [
+     "P1: Gerar CV adaptado para a vaga",
+     "P1: Criar conta e acessar o app"
+    ]
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 29,
+   "tasks": [
+    "TASK-043",
+    "TASK-050"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {
+    "G2": {
+     "CT-9": [
+      "TASK-043",
+      "TASK-050"
+     ]
+    }
+   },
+   "perfil_qa_previsto": "PADRAO"
+  },
+  {
+   "n": 30,
+   "tasks": [
+    "TASK-044"
+   ],
+   "risco_max": "médio",
+   "gatilhos_previstos": {},
+   "perfil_qa_previsto": null
+  }
+ ]
+}
