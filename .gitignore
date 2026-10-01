@@ -1,0 +1,9 @@
+.env
+reports/
+dist/
+.venv/
+node_modules/
+.angular/
+__pycache__/
+.aws-sam/
+mlflow-data/
