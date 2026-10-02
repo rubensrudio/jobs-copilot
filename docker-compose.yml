@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
   
   mlflow:
-    image: ghcr.io/mlflow/mlflow:latest # TODO pin: same version as mlflow in backend/uv.lock (TASK-002)
+    image: ghcr.io/mlflow/mlflow:v3.16.1
     command: >
       mlflow server
       --host 0.0.0.0
