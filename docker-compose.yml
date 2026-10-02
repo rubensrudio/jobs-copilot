@@ -6,7 +6,7 @@ services:
     volumes:
       - mongo-data:/data/db
     restart: unless-stopped
-    
+  
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest # TODO pin: same version as mlflow in backend/uv.lock (TASK-002)
     command: >
