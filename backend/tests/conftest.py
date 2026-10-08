@@ -1,5 +1,6 @@
 import os
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
+from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
 
@@ -8,6 +9,7 @@ from fastapi.testclient import TestClient
 from pymongo import MongoClient
 from pymongo.database import Database
 
+from app.auth.sessions import SESSION_COOKIE, create_session
 from app.config import Settings
 from app.db import ensure_indexes, get_db
 from app.main import create_app
@@ -58,3 +60,44 @@ def client(settings: Settings, db: Database[dict[str, Any]]) -> TestClient:
     app = create_app(settings)
     app.dependency_overrides[get_db] = lambda: db
     return TestClient(app)
+
+
+@pytest.fixture
+def make_user(db: Database[dict[str, Any]]) -> Callable[..., dict[str, Any]]:
+    def _make_user(
+        email: str = "a@example.com",
+        role: str = "user",
+        active: bool = True,
+        deletion_pending: bool = False,
+    ) -> dict[str, Any]:
+        user: dict[str, Any] = {
+            "email": email,
+            "identities": [{"provider": "google", "subject": f"sub-{email}"}],
+            "role": role,
+            "active": active,
+            "created_at": datetime.now(UTC),
+            "terms_acceptances": [],
+            "settings": {
+                "highlight_enabled": True,
+                "highlight_threshold": 70,
+                "cost_cap_usd": 5.0,
+            },
+            "deletion_pending": deletion_pending,
+        }
+        user["_id"] = db.users.insert_one(user).inserted_id
+        return user
+
+    return _make_user
+
+
+@pytest.fixture
+def login_as(
+    db: Database[dict[str, Any]], settings: Settings
+) -> Callable[[TestClient, dict[str, Any]], None]:
+    def _login_as(client: TestClient, user: dict[str, Any]) -> None:
+        token = create_session(
+            db, str(user["_id"]), ttl_days=settings.session_ttl_days, now=datetime.now(UTC)
+        )
+        client.cookies.set(SESSION_COOKIE, token)
+
+    return _login_as
