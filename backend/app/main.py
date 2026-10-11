@@ -4,7 +4,9 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI
+from starlette.middleware.sessions import SessionMiddleware
 
+from app.auth.router import router as auth_router
 from app.config import Settings, get_settings
 from app.db import ensure_indexes, get_db
 from app.errors import register_error_handlers
@@ -34,6 +36,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     if settings is not None:
         app.dependency_overrides[get_settings] = lambda: settings
     register_error_handlers(app)
+
+    effective = settings or get_settings()
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=effective.session_secret.get_secret_value(),
+        max_age=600,
+        same_site="lax",
+        https_only=effective.cookie_secure,
+    )
+    app.include_router(auth_router)
 
     return app
 
