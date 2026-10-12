@@ -65,3 +65,35 @@ def test_callback_inactive_user_login_failed(
     assert response.headers["location"] == "http://localhost:4200/login?error=login_failed"
     assert SESSION_COOKIE not in response.cookies
     assert db.sessions.count_documents({}) == 0
+
+
+def test_callback_not_invited_redirects_and_stores_no_user(
+    client: TestClient, db: Database[dict[str, Any]]
+) -> None:
+    use_identity(client, OAuthIdentity("google", "sub-new", EMAIL))
+
+    response = client.get(CALLBACK, follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.headers["location"] == "http://localhost:4200/login?error=not_invited"
+    assert db.users.count_documents({}) == 0
+    attempt = db.signup_attempts.find_one()
+    assert attempt is not None
+    assert attempt["outcome"] == "rejected_not_invited"
+
+
+def test_callback_invited_sets_pending_and_redirects_to_terms(
+    client: TestClient, db: Database[dict[str, Any]]
+) -> None:
+    db.allowed_emails.insert_one({"_id": EMAIL})  # convida o e-mail
+    use_identity(client, OAuthIdentity("google", "sub-new", EMAIL))
+
+    response = client.get(CALLBACK, follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.headers["location"] == "http://localhost:4200/signup/terms"
+    assert "session" in response.cookies  # cookie do SessionMiddleware com o pending_signup
+    assert db.users.count_documents({}) == 0  # ainda não cria usuário
+    attempt = db.signup_attempts.find_one()
+    assert attempt is not None
+    assert attempt["outcome"] == "pending_terms"

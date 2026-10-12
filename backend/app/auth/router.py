@@ -1,5 +1,5 @@
 import logging
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any
 
 from authlib.integrations.starlette_client import OAuth
@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 from app.auth.oauth import IdentityResolver, get_identity_resolver, get_oauth
 from app.auth.sessions import create_session, set_session_cookie
-from app.auth.signup import find_user_by_identity
+from app.auth.signup import find_user_by_identity, is_email_allowed, record_signup_attempt
 from app.config import Settings, get_settings
 from app.db import get_db
 from app.errors import AppError
@@ -18,6 +18,7 @@ router = APIRouter(prefix="/api/auth")
 logger = logging.getLogger(__name__)
 
 PROVIDERS = ["google", "github"]
+PENDING_SIGNUP_TTL = timedelta(minutes=10)
 
 
 def _redirect(settings: Settings, path: str) -> RedirectResponse:
@@ -72,4 +73,18 @@ async def callback(
         logger.info("auth.login provider=%s outcome=success user_id=%s", provider, user_id)
         return response
 
-    return _redirect(settings, "/login?error=login_failed")
+    now = datetime.now(UTC)
+    if not is_email_allowed(db, identity.email, settings):
+        record_signup_attempt(db, identity.email, provider, "rejected_not_invited", now)
+        logger.info("auth.signup provider=%s outcome=rejected_not_invited", provider)
+        return _redirect(settings, "/login?error=not_invited")
+
+    record_signup_attempt(db, identity.email, provider, "pending_terms", now)
+    request.session["pending_signup"] = {
+        "provider": identity.provider,
+        "subject": identity.subject,
+        "email": identity.email,
+        "exp": (now + PENDING_SIGNUP_TTL).timestamp(),
+    }
+    logger.info("auth.signup provider=%s outcome=pending_terms", provider)
+    return _redirect(settings, "/signup/terms")
